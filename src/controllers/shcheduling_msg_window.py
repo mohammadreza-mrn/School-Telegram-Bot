@@ -242,6 +242,6 @@ class SchedulingMessageWindow(QWidget):
         lbl_title:str = ""
 
         if file_validator.check_is_valid_image():
-            lbl_title:str = "فایل تصویری"
+            lbl_title:str = "فایل تصویری انتخاب شد"
 
         self.__lbl_filename.setText(lbl_title)
