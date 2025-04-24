@@ -17,6 +17,7 @@ from ..tools.widget_helpers import btn_regular_stylesheet,MessageBox
 class CourcesListWindow(QWidget):
 
     ui_filename:str = "ui/cources_list_window.ui"
+    icon_filename:str = "assets/icon.png"
 
     icon_files = {
         "add" : "assets/images/Add.png",
@@ -32,6 +33,7 @@ class CourcesListWindow(QWidget):
         self.__cource_id:int = 0
         loadUi(self.ui_filename,self)
         self.setWindowTitle("مدیریت دوره ها")
+        self.setWindowIcon(QIcon(self.icon_filename))
         self.__find_widgets()
 
 

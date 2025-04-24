@@ -3,6 +3,7 @@ from typing import Optional
 
 from PyQt5.QtWidgets import (QMainWindow,QMenu,QAction,QWidget,QLineEdit,QPushButton,QListWidget,QTextEdit)
 from PyQt5.uic import loadUi
+from PyQt5.QtGui import QIcon
 
 from models.db_config import InteractDB
 from models.models import AboutModel,ContactModel,WelcomeTextModel
@@ -11,6 +12,7 @@ from ..tools.widget_helpers import MessageBox
 class ReadyTextsWindow(QWidget):
 
     ui_filename:str = "ui/readytexts_window.ui"
+    icon_filename:str = "assets/icon.png"
 
     def __init__(self,parent:Optional[QWidget] = None,interact_db:Optional[InteractDB] = None):
         
@@ -19,6 +21,7 @@ class ReadyTextsWindow(QWidget):
         self.parent = parent
         self.interact_db = interact_db
         self.setWindowTitle("متن های آماده")
+        self.setWindowIcon(QIcon(self.icon_filename))
         self.__find_widgets()
         self.__load_database()
 

@@ -2,6 +2,7 @@
 
 from PyQt5.QtWidgets import QWidget, QLineEdit, QPushButton, QTextEdit
 from PyQt5.uic import loadUi
+from PyQt5.QtGui import QIcon
 
 from models.db_config import InteractDB
 from ..tools.widget_helpers import btn_regular_stylesheet
@@ -11,6 +12,7 @@ from models.models import CourcesModel
 class AddOrEditCourcesWindow(QWidget):
 
     ui_filename: str = "ui/add_or_edit_cources_window.ui"
+    icon_filename:str = "assets/icon.png"
 
     btn_save_icon_path:str = "assets/images/Save.png"
 
@@ -20,6 +22,7 @@ class AddOrEditCourcesWindow(QWidget):
         self.__parent:QWidget = parent
         self.__cource_id:int = 0
         loadUi(self.ui_filename, self)
+        self.setWindowIcon(QIcon(self.icon_filename))
 
         self.__find_widgets()
 

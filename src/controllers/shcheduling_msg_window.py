@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import Qt,QPoint,QDate
+from PyQt5.QtGui import QIcon
 
 from models.db_config import InteractDB
 from models.models import TelegramUserModel,TokenModel,BotMessagesTiming
@@ -22,6 +23,8 @@ class SchedulingMessageWindow(QWidget):
 
     ui_filename:str = "ui/scheduling_message.ui"
     window_title:str = "زمانبندی پیام"
+    icon_filename:str = "assets/icon.png"
+
 
     def __init__(self,parent:Optional[QWidget] = None,interact_db:Optional[InteractDB] = None,) -> None:
         
@@ -30,6 +33,7 @@ class SchedulingMessageWindow(QWidget):
         self.__interact_db = interact_db
         loadUi(self.ui_filename,self)
         self.setWindowTitle(self.window_title)
+        self.setWindowIcon(QIcon(self.icon_filename))
 
         self.__recivers_list:set[str] = set()
         self.__filename:str = ""

@@ -1,6 +1,7 @@
 
 from PyQt5.QtWidgets import (QMainWindow,QMenu,QAction,QWidget,QLineEdit,QPushButton,QListWidget,QListWidgetItem)
 from PyQt5.uic import loadUi
+from PyQt5.QtGui import QIcon
 
 from models.db_config import InteractDB
 from models.models import TokenModel,ProxyModel
@@ -11,6 +12,7 @@ from src.telegram.handler import BotManager
 class SettingWindow(QWidget):
 
     ui_filename:str = "ui/setting_window.ui"
+    icon_filename:str = "assets/icon.png"
     window_title:str = "تنظیمات اتصال به تلگرام"
 
     def __init__(self, parent = None,interact_db:InteractDB = None):
@@ -21,7 +23,7 @@ class SettingWindow(QWidget):
         loadUi(self.ui_filename,self)
 
         self.setWindowTitle(self.window_title)
-        
+        self.setWindowIcon(QIcon(self.icon_filename))
         
         self.__define_child_widgets()
         self.__load_database()

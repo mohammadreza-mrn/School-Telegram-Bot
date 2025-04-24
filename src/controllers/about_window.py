@@ -1,6 +1,7 @@
 
 from PyQt5.QtWidgets import (QMainWindow,QMenu,QAction,QWidget,QTextBrowser)
 from PyQt5.uic import loadUi
+from PyQt5.QtGui import QIcon
 
 from models.db_config import InteractDB
 from models.models import CourcesModel
@@ -9,6 +10,7 @@ from ..tools import resources_rc
 class AboutUsWindow(QWidget):
     
     ui_filename:str = "ui/about_window.ui"
+    icon_filename:str = "assets/icon.png"
 
     def __init__(self,interact_db:InteractDB = None,parent:QWidget = None) -> None:
         
@@ -16,6 +18,7 @@ class AboutUsWindow(QWidget):
         self.__interact_db = interact_db
         self.__parent = parent
         loadUi(self.ui_filename,self)
+        self.setWindowIcon(self.icon_filename)
         self.setWindowTitle("درباره برنامه")
 
         self.__find_widgets()
