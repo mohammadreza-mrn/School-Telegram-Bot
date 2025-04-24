@@ -38,7 +38,7 @@ class MainWindow(QMainWindow):
         loadUi(self.ui_filename,self)
 
         self.setWindowTitle("مدیریت ربات تلگرام")
-        self.setWindowIcon(QIcon(self.ui_filename))
+        self.setWindowIcon(QIcon(self.icon_filename))
 
         self.interact_db = interact_db
         self.__external_windows_configs()
