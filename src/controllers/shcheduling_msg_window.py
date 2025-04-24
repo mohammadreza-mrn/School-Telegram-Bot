@@ -1,5 +1,6 @@
 
 from typing import Optional
+import os
 
 from PyQt5.QtWidgets import (
     QMenu,QAction,QTableWidget,QTableWidgetItem,QAbstractItemView,QLineEdit,QTextEdit,QPushButton,QCheckBox,QDateTimeEdit,
@@ -15,6 +16,7 @@ from ..tools.widget_helpers import MessageBox,DateTimeConverter
 from ..telegram.handler import BotManager
 
 from ..tools.worker import MessageQueueSendTimeWorker
+from ..tools.tool import FileValidator
 
 class SchedulingMessageWindow(QWidget):
 
@@ -109,7 +111,7 @@ class SchedulingMessageWindow(QWidget):
                         else:
                             all_users:list[TelegramUserModel] = self.__interact_db.fetch_all(TelegramUserModel())
                             if self.__filename != "":
-                                BotManager.send_many_photo(token,self.__recivers_list,self.__filename,message)
+                                BotManager.send_many_photo(token,[item.user_id for item in all_users],self.__filename,message)
                             else:
                                 BotManager.send_many_messages(token,[item.user_id for item in all_users],message)
                         MessageBox.success_message("پیام با موفقیت ارسال شد")
@@ -234,4 +236,12 @@ class SchedulingMessageWindow(QWidget):
         
         filename:str = QFileDialog.getOpenFileName(self,"انتخاب فایل")[0]
         self.__filename = filename
-        self.__lbl_filename.setText(self.__filename)
+        
+        file_validator = FileValidator(self.__filename)
+
+        lbl_title:str = ""
+
+        if file_validator.check_is_valid_image():
+            lbl_title:str = "فایل تصویری"
+
+        self.__lbl_filename.setText(lbl_title)
