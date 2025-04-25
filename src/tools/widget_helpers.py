@@ -1,3 +1,5 @@
+
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QLineEdit,QMessageBox,QWidget
 import jdatetime
 from datetime import datetime
@@ -7,10 +9,13 @@ class MessageBox:
     yes = QMessageBox.Yes
     no = QMessageBox.No
 
+    icon_filename:str = "assets/icon.png"
+
     @classmethod
     def success_message(cls,text:str) -> None:
 
         msg = QMessageBox()
+        msg.setWindowIcon(QIcon(cls.icon_filename))
         msg.setIcon(QMessageBox.Information)
         msg.setText(text)
         msg.setWindowTitle("موفقیت")
@@ -20,7 +25,8 @@ class MessageBox:
     def error_message(cls,text:str) -> None:
 
         msg = QMessageBox()
-        msg.setIcon(QMessageBox.Error)
+        msg.setWindowIcon(QIcon(cls.icon_filename))
+        msg.setIcon(QMessageBox.Critical)
         msg.setText(text)
         msg.setWindowTitle("خطا")
         msg.exec_()
@@ -29,6 +35,7 @@ class MessageBox:
     def warning_message(cls,text:str) -> None:
 
         msg = QMessageBox()
+        msg.setWindowIcon(QIcon(cls.icon_filename))
         msg.setIcon(QMessageBox.Warning)
         msg.setText(text)
         msg.setWindowTitle("هشدار")
