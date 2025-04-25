@@ -71,7 +71,6 @@ class MessageQueueSendTimeWorker(QThread):
                         self.messages_list.remove(message)
                         self.message_sent.emit("یک پیام ارسال شد",message.id)
                     except NetworkError as e:
-                        print(e)
                         self.error_recived.emit("خطا در ارسال پیام")
 
     def __check_time_equal(self,first_time:datetime,second_time:datetime) -> bool:
