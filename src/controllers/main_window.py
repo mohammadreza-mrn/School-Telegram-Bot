@@ -294,10 +294,10 @@ class MainWindow(QMainWindow):
                     {message_title}
                     {message_text}
                 """
-                proxy:str = self.interact_db.fetch_last(ProxyModel()).proxy
+                proxy:ProxyModel = self.interact_db.fetch_last(ProxyModel())
                 
                 if proxy: # Checking Proxy To Connect Via Proxy if Exists
-                    bot_action = BotActions(token,proxy)
+                    bot_action = BotActions(token,proxy.proxy)
                 else:
                     bot = BotActions(token)
                 
