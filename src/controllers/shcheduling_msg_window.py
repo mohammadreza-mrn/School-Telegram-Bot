@@ -11,10 +11,10 @@ from PyQt5.QtCore import Qt,QPoint,QDate
 from PyQt5.QtGui import QIcon
 
 from models.db_config import InteractDB
-from models.models import TelegramUserModel,TokenModel,BotMessagesTiming
+from models.models import TelegramUserModel,TokenModel,BotMessagesTiming,ProxyModel
 
 from ..tools.widget_helpers import MessageBox,DateTimeConverter
-from ..telegram.handler import BotManager
+from ..telegram.handler import BotActions
 
 from ..tools.worker import MessageQueueSendTimeWorker
 from ..tools.tool import FileValidator
@@ -106,17 +106,24 @@ class SchedulingMessageWindow(QWidget):
                         {message_title} \n {message_text}
                     """
 
+                    proxy:str = self.__interact_db.fetch_last(ProxyModel()).proxy
+
+                    if proxy:
+                        bot_action = BotActions(token,proxy)
+                    else:
+                        bot_action = BotActions(token)
+
                     if not self.__chk_send_all.isChecked():
                         if self.__filename != "":
-                            BotManager.send_many_photo(token,self.__recivers_list,self.__filename,message)
+                            bot_action.send_multi_image(token,self.__recivers_list,self.__filename,message)
                         else:
-                            BotManager.send_many_messages(token,self.__recivers_list,message)
+                            bot_action.send_multi_message(token,self.__recivers_list,message)
                     else:
                         all_users:list[TelegramUserModel] = self.__interact_db.fetch_all(TelegramUserModel())
                         if self.__filename != "":
-                            BotManager.send_many_photo(token,[item.user_id for item in all_users],self.__filename,message)
+                            bot_action.send_multi_image(token,[item.user_id for item in all_users],self.__filename,message)
                         else:
-                            BotManager.send_many_messages(token,[item.user_id for item in all_users],message)
+                            bot_action.send_multi_image(token,[item.user_id for item in all_users],message)
                     MessageBox.success_message("پیام با موفقیت ارسال شد")
 
                 else:

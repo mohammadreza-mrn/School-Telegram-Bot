@@ -294,7 +294,13 @@ class MainWindow(QMainWindow):
                     {message_title}
                     {message_text}
                 """
-                bot_action = BotActions(token)
+                proxy:str = self.interact_db.fetch_last(ProxyModel()).proxy
+                
+                if proxy: # Checking Proxy To Connect Via Proxy if Exists
+                    bot_action = BotActions(token,proxy)
+                else:
+                    bot = BotActions(token)
+                
                 if bot_action.send_message(user_id,msg):
                     MessageBox.success_message("پیام با موفقیت ارسال شد")
                 else:
