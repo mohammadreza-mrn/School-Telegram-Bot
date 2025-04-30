@@ -1,12 +1,13 @@
 
+import time
 import httpx
 import asyncio
-from typing import Optional
+from typing import Optional,Union
 
 from telegram import Update
 from telegram.ext import ApplicationBuilder,CommandHandler,MessageHandler,ContextTypes,filters
 from telegram import Update,InlineKeyboardButton,ReplyKeyboardMarkup,KeyboardButton
-from telegram.error import NetworkError
+from telegram.error import NetworkError,Forbidden
 from telegram import Bot
 
 from models.db_config import DatabaseConfig,InteractDB
@@ -123,61 +124,71 @@ class BotManager:
         except:
             return False
 
+    
+class BotActions:
 
-    @classmethod
-    def send_many_messages(cls,token:str,recivers:list[str],message:str) -> bool:
+    def __init__(self,token:str,proxy:Optional[str] = None) -> None:
+
+        self.__token:str = token
+        self.__proxy = proxy
+
+        self.__bot = Bot(self.__token)
         
-        bot = Bot(token)
+    @property
+    def token(self) -> str:
+        return self.__token
+    
+    @property
+    def bot(self) -> Bot:
+        return self.__bot
 
-        for chat_id in recivers:
-
-            if not chat_id:
-                continue
-            asyncio.run(bot.send_message(chat_id,message))
-
-    @classmethod
-    def send_custom_message(cls,token:str,chat_id:str,message:str) -> bool:
-
-        try:
-            bot = Bot(token = token)
-            asyncio.run(bot.send_message(chat_id,message))
-            
-            return True
-        except Exception as e:
-            return False
-    @classmethod
-    def send_many_photo(cls,token:str,recivers:list[str],pcture_name:str,caption:Optional[str] = None) -> bool:
+    def test_connection(self) -> bool:
 
         try:
-
-            bot = Bot(token)
-
-            for chat_id in recivers:
-
-                asyncio.run(cls.send_photo(token,chat_id,pcture_name,caption))
-
+            asyncio.run(self.bot.get_me())
             return True
         except:
             return False
 
-        
-    @classmethod
-    async def send_photo(cls,token:str,chat_id:str,picture_name:str,caption:Optional[str] = None) -> bool:
+    async def send_multi_message(self,recivers:list[str],message:str,**kwargs) -> Union[bool,Exception]:
 
         try:
+            for chat_id in recivers:
 
-            bot = Bot(token)
-
-            with open(picture_name,"rb") as file:
-                await bot.send_photo(chat_id,file,caption)
-                return True
+                await self.send_message(chat_id,message)
+            return True
+        
         except Exception as e:
+            return False,e
+
+
+    async def send_message(self,reciver:str,message:str,**kwargs) -> bool:
+
+        try:
+            await self.bot.send_message(reciver,message,**kwargs)
+            return True
+        except:
             return False
         
+    
+    async def send_photo(self,reciver:str,file:bytes,caption:Optional[str] = None) -> Union[bool,Exception]:
+
+        try:
+            
+            await self.bot.send_photo(reciver,file,caption)
+            return True
+
+        except Exception as e:
+            return False,e
+        
+    async def send_multi_image(self,recivers:list[str],file:bytes,caption:Optional[str] = None) -> Union[bool,Exception]:
+
+        try:
+            for chat_id in recivers:
+                await self.send_photo(chat_id,file,caption)
+
+            return True
+        except Exception as e:
+            return False,e
 
     
-
-
-    
-        
-        
