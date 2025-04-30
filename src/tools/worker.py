@@ -7,7 +7,7 @@ from telegram.error import NetworkError,InvalidToken
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QWidget
 
-from src.telegram.handler import BotManager
+from src.telegram.handler import BotManager,BotActions
 
 from models.db_config import InteractDB
 from models.models import TelegramUserModel,BotMessagesTiming
@@ -58,7 +58,7 @@ class MessageQueueSendTimeWorker(QThread):
         super().__init__(parent)
 
     def run(self):
-        
+        bot_action = BotActions(self.__token)
         while True:
             now = datetime.now()
             for message in self.messages_list:
@@ -67,7 +67,7 @@ class MessageQueueSendTimeWorker(QThread):
                 _datetime:datetime = datetime.strptime(_datetime,"%Y/%m/%d %H:%M")
                 if self.__check_time_equal(now,_datetime):
                     try:
-                        BotManager.send_many_messages(self.__token,message.recivers,message.message)
+                        bot_action.send_multi_message(message.recivers,message.message)
                         self.messages_list.remove(message)
                         self.message_sent.emit("یک پیام ارسال شد",message.id)
                     except NetworkError as e:
