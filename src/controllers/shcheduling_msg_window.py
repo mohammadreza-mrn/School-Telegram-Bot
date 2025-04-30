@@ -18,6 +18,7 @@ from ..telegram.handler import BotActions
 
 from ..tools.worker import MessageQueueSendTimeWorker
 from ..tools.tool import FileValidator
+from ..tools.widget_helpers import WidgetActions
 
 class SchedulingMessageWindow(QWidget):
 
@@ -105,25 +106,31 @@ class SchedulingMessageWindow(QWidget):
                     message:str = f""" 
                         {message_title} \n {message_text}
                     """
+                    self.setEnabled(False) # Deactivng Current Window Until Sending Process Finish
+                    self.setStatusTip("لطفا تا اتمام ارسال صبر کنید")
+                    proxy:ProxyModel = self.__interact_db.fetch_last(ProxyModel())
 
-                    proxy:str = self.__interact_db.fetch_last(ProxyModel()).proxy
+                    delay_second:int = 3
 
-                    if proxy:
-                        bot_action = BotActions(token,proxy)
+                    if proxy: # Checking Proxy Exists To Sending Messages Via Proxy
+                        bot_action = BotActions(token,proxy.proxy)
                     else:
                         bot_action = BotActions(token)
 
                     if not self.__chk_send_all.isChecked():
+                        time_taken = (len(self.__recivers_list) * delay_second) // 60
+                        self.setStatusTip(f"زمان انجام تقریبی : {time_taken} دقیقه یا {len(self.__recivers_list) * delay_second} ثانیه")
                         if self.__filename != "":
-                            bot_action.send_multi_image(token,self.__recivers_list,self.__filename,message)
+                            bot_action.send_multi_image(self.__recivers_list,self.__filename,message)
                         else:
-                            bot_action.send_multi_message(token,self.__recivers_list,message)
+                            bot_action.send_multi_message(self.__recivers_list,message,delay=delay_second)
                     else:
                         all_users:list[TelegramUserModel] = self.__interact_db.fetch_all(TelegramUserModel())
                         if self.__filename != "":
-                            bot_action.send_multi_image(token,[item.user_id for item in all_users],self.__filename,message)
+                            bot_action.send_multi_image([item.user_id for item in all_users],self.__filename,message)
                         else:
-                            bot_action.send_multi_image(token,[item.user_id for item in all_users],message)
+                            bot_action.send_multi_message([item.user_id for item in all_users],message,delay = delay_second)
+                    self.setEnabled(True) # Get Back Control Of Widget
                     MessageBox.success_message("پیام با موفقیت ارسال شد")
 
                 else:
