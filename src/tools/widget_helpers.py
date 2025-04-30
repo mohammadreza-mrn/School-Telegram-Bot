@@ -1,3 +1,4 @@
+from typing import Iterable,Optional
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QLineEdit,QMessageBox,QWidget
@@ -102,3 +103,22 @@ def btn_regular_stylesheet(btn:QLineEdit,icon_path:str) -> None:
     btn.setStyleSheet(style)
 
 
+class WidgetActions:
+
+    def __init__(self,parent_widget:Optional[QWidget] = None):
+        
+        self.__parent_widget = parent_widget
+
+    @property
+    def parent_widget(self) -> QWidget:
+        return self.__parent_widget
+
+    def deactive_all_childs(self,childs:Iterable[QWidget]) -> bool:
+
+        try:
+            for widget in childs:
+                widget.setEnabled(False)
+            return True
+        
+        except:
+            return False
