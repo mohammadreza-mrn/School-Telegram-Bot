@@ -150,43 +150,47 @@ class BotActions:
         except:
             return False
 
-    async def send_multi_message(self,recivers:list[str],message:str,**kwargs) -> Union[bool,Exception]:
+    def send_multi_message(self,recivers:list[str],message:str,**kwargs) -> Union[bool,Exception]:
+        
+        delay:float = kwargs.get("delay",0.0)
 
         try:
             for chat_id in recivers:
-
-                await self.send_message(chat_id,message)
+                self.send_message(chat_id,message)
+                time.sleep(delay)
             return True
         
         except Exception as e:
             return False,e
 
 
-    async def send_message(self,reciver:str,message:str,**kwargs) -> bool:
+    def send_message(self,reciver:str,message:str,**kwargs) -> bool:
 
         try:
-            await self.bot.send_message(reciver,message,**kwargs)
+            asyncio.run(self.bot.send_message(reciver,message,**kwargs))
             return True
         except:
             return False
         
     
-    async def send_photo(self,reciver:str,file:bytes,caption:Optional[str] = None) -> Union[bool,Exception]:
+    def send_photo(self,reciver:str,file:bytes,caption:Optional[str] = None) -> Union[bool,Exception]:
 
         try:
             
-            await self.bot.send_photo(reciver,file,caption)
+            asyncio.run(self.bot.send_photo(reciver,file,caption))
             return True
 
         except Exception as e:
             return False,e
         
-    async def send_multi_image(self,recivers:list[str],file:bytes,caption:Optional[str] = None) -> Union[bool,Exception]:
+    def send_multi_image(self,recivers:list[str],file:bytes,caption:Optional[str] = None,**kwargs) -> Union[bool,Exception]:
+
+        delay:float = kwargs.get("delay",0.0)
 
         try:
             for chat_id in recivers:
-                await self.send_photo(chat_id,file,caption)
-
+                asyncio.run(self.send_photo(chat_id,file,caption))
+                time.sleep(delay)
             return True
         except Exception as e:
             return False,e
