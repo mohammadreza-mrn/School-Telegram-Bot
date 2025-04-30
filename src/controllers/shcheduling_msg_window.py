@@ -106,23 +106,18 @@ class SchedulingMessageWindow(QWidget):
                         {message_title} \n {message_text}
                     """
 
-                    try:
-                        if not self.__chk_send_all.isChecked():
-                            if self.__filename != "":
-                                BotManager.send_many_photo(token,self.__recivers_list,self.__filename,message)
-                            else:
-                                BotManager.send_many_messages(token,self.__recivers_list,message)
+                    if not self.__chk_send_all.isChecked():
+                        if self.__filename != "":
+                            BotManager.send_many_photo(token,self.__recivers_list,self.__filename,message)
                         else:
-                            all_users:list[TelegramUserModel] = self.__interact_db.fetch_all(TelegramUserModel())
-                            if self.__filename != "":
-                                BotManager.send_many_photo(token,[item.user_id for item in all_users],self.__filename,message)
-                            else:
-                                BotManager.send_many_messages(token,[item.user_id for item in all_users],message)
-                        MessageBox.success_message("پیام با موفقیت ارسال شد")
-                    except:
-                        MessageBox.warning_message("خطا در ارسال پیام")
-                        
-                    
+                            BotManager.send_many_messages(token,self.__recivers_list,message)
+                    else:
+                        all_users:list[TelegramUserModel] = self.__interact_db.fetch_all(TelegramUserModel())
+                        if self.__filename != "":
+                            BotManager.send_many_photo(token,[item.user_id for item in all_users],self.__filename,message)
+                        else:
+                            BotManager.send_many_messages(token,[item.user_id for item in all_users],message)
+                    MessageBox.success_message("پیام با موفقیت ارسال شد")
 
                 else:
                     gregorian = DateTimeConverter(send_time).to_gregorian()
