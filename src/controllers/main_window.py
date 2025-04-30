@@ -22,7 +22,7 @@ from models.models import TokenModel,ProxyModel,TelegramUserModel,BotMessagesTim
 from ..tools.worker import BotWorker,MessageQueueSendTimeWorker
 from ..tools.widget_helpers import MessageBox,DateTimeConverter
 
-from ..telegram.handler import BotManager
+from ..telegram.handler import BotActions
 
 
 
@@ -294,7 +294,8 @@ class MainWindow(QMainWindow):
                     {message_title}
                     {message_text}
                 """
-                if BotManager.send_custom_message(token,user_id,msg):
+                bot_action = BotActions(token)
+                if bot_action.send_message(user_id,msg):
                     MessageBox.success_message("پیام با موفقیت ارسال شد")
                 else:
                     MessageBox.warning_message("خطا در ارسال پیام به کاربر مورد نظر")
